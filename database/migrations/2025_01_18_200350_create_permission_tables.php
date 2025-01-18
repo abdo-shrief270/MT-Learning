@@ -51,23 +51,6 @@ return new class extends Migration
             }
         });
 
-        \Spatie\Permission\Models\Role::create([
-           'name'=>'super_admin',
-           'guard_name'=>'web'
-        ]);
-        \Spatie\Permission\Models\Role::create([
-            'name'=>'admin',
-            'guard_name'=>'web'
-        ]);
-        \Spatie\Permission\Models\Role::create([
-            'name'=>'instructor',
-            'guard_name'=>'web'
-        ]);
-        \Spatie\Permission\Models\Role::create([
-            'name'=>'student',
-            'guard_name'=>'web'
-        ]);
-
         Schema::create($tableNames['model_has_permissions'], function (Blueprint $table) use ($tableNames, $columnNames, $pivotPermission, $teams) {
             $table->unsignedBigInteger($pivotPermission);
 

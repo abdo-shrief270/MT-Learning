@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,7 +14,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        Artisan::call('shield:install admin');
+        Artisan::call('shield:generate --all --panel=admin');
 
         User::factory()->create([
             'name' => 'Abdelrahman Shrief Ali',
@@ -35,5 +37,20 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('12345678'),
             'active' => true
         ]);
+
+        \Spatie\Permission\Models\Role::create([
+            'name'=>'admin',
+            'guard_name'=>'web'
+        ]);
+        \Spatie\Permission\Models\Role::create([
+            'name'=>'instructor',
+            'guard_name'=>'web'
+        ]);
+        \Spatie\Permission\Models\Role::create([
+            'name'=>'student',
+            'guard_name'=>'web'
+        ]);
+
+        Artisan::call('shield:super-admin --user=1');
     }
 }
