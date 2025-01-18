@@ -22,7 +22,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: SSH Deploy Unlimited Beon
+      - name: SSH Deploy MT School
         if: github.event_name == 'push' || github.event_name == 'pull_request' && github.ref == 'refs/heads/main'
         uses: appleboy/ssh-action@master
         with:
