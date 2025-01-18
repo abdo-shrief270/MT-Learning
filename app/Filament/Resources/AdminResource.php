@@ -57,6 +57,9 @@ class AdminResource extends Resource
                     ->sortable()
                     ->copyable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('roles')
+                    ->state(fn($record) => $record->roles->pluck('name'))
+                    ->searchable(),
                 Tables\Columns\ToggleColumn::make('active'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->sortable()
