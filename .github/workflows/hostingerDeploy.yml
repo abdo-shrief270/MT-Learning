@@ -24,11 +24,8 @@ jobs:
 
       - name: Install Composer Dependencies
         run: |
-          composer install
-          php artisan config:clear
-          php artisan cache:clear
-          php artisan route:clear
-          php artisan view:clear
+          composer2 install
+          php artisan optimize
 
       - name: Zip Files for Deployment
         run: zip -r deployment.zip . -x ".git/*" "node_modules/*" "tests/*"
