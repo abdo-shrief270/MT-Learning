@@ -24,11 +24,7 @@ jobs:
 
       - name: Install Composer Dependencies
         run: |
-          composer2 install
-          php artisan optimize
-
-      - name: Zip Files for Deployment
-        run: zip -r deployment.zip . -x ".git/*" "node_modules/*" "tests/*"
+          composer install
 
       - name: Upload to Hostinger via FTP
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
