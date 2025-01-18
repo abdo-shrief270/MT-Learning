@@ -16,22 +16,25 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class CourseLessonResource extends Resource
 {
     protected static ?string $model = CourseLesson::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $modelLabel ='Lesson';
+    protected static ?string $navigationLabel = 'Course Lessons';
+    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Course Management';
+    protected static ?string $navigationIcon = 'heroicon-o-video-camera';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('description')
-                    ->required()
-                    ->columnSpanFull(),
                 Forms\Components\Select::make('course_id')
                     ->relationship('course', 'title')
                     ->required(),
+                Forms\Components\TextInput::make('title')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\RichEditor::make('description')
+                    ->required()
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('video_link')
                     ->required()
                     ->maxLength(255),
@@ -50,15 +53,17 @@ class CourseLessonResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('video_link')
+                    ->icon('heroicon-o-link')
+                    ->color('primary')
+                    ->url(fn($record)=>$record->video_link,true)
                     ->searchable(),
-                Tables\Columns\IconColumn::make('active')
-                    ->boolean(),
+                Tables\Columns\ToggleColumn::make('active'),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->since()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->since()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -75,7 +80,10 @@ class CourseLessonResource extends Resource
                 ]),
             ]);
     }
-
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
     public static function getPages(): array
     {
         return [

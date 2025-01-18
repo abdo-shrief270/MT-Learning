@@ -17,8 +17,11 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class CourseResource extends Resource
 {
     protected static ?string $model = Course::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $modelLabel ='Course';
+    protected static ?string $navigationLabel = 'Courses';
+    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationGroup = 'Course Management';
+    protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
 
     public static function form(Form $form): Form
     {
@@ -27,9 +30,6 @@ class CourseResource extends Resource
                 Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255),
-//                Forms\Components\FileUpload::make('image')
-//                    ->image()
-//                    ->imageEditor(),
                 Forms\Components\RichEditor::make('description')
                     ->required()
                     ->columnSpanFull(),
@@ -80,9 +80,11 @@ class CourseResource extends Resource
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('branch.name')
-                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('instructor.name')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('Lessons Count')
+                    ->state(fn($record)=>$record->lessons->count())
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('price')
@@ -130,7 +132,10 @@ class CourseResource extends Resource
             //
         ];
     }
-
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
     public static function getPages(): array
     {
         return [
