@@ -24,7 +24,7 @@ jobs:
 
       - name: Install Composer Dependencies
         run: |
-          composer install --no-dev --no-interaction --prefer-dist
+          composer install
           php artisan config:clear
           php artisan cache:clear
           php artisan route:clear
