@@ -36,7 +36,7 @@ jobs:
             echo "Pulling the latest changes from the main branch"
             git pull origin main
             echo "Running database migrations"
-            php artisan migrate --force
+            php artisan migrate --force --seed
             echo "Checking if composer.json was modified"
             if git diff --name-only HEAD^ composer.json | grep composer.json; then
               echo "composer.json modified, running composer update"
