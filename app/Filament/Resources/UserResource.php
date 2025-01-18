@@ -13,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class UserResource extends Resource
 {
@@ -69,7 +70,11 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('roles')
                     ->state(fn($record) => $record->roles->pluck('name'))
                     ->searchable(),
-                Tables\Columns\ToggleColumn::make('active'),
+                Tables\Columns\ToggleColumn::make('active')
+                    ->visible(Auth::user()->can('edit_user')),
+                Tables\Columns\IconColumn::make('active')
+                    ->boolean()
+                    ->visible(!Auth::user()->can('edit_user')),
                 Tables\Columns\TextColumn::make('created_at')
                     ->since()
                     ->sortable()
