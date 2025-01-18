@@ -32,8 +32,8 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: .
-          server-dir: /public_html # Adjust this path based on your server structure
+          local-dir: ./
+          server-dir: /home/u639718779/domains/mt.kaabosh.com/public_html
 
       - name: Post-Deployment Commands (Optional)
         run: |
