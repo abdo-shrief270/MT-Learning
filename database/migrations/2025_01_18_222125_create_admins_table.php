@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('course_lessons', function (Blueprint $table) {
+        Schema::create('admins', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('description');
-            $table->foreignId('course_id')->constrained('courses','id')->cascadeOnDelete();
-            $table->string('video_link');
-            $table->boolean('active')->default(false);
+            $table->foreignId('user_id')->constrained('users','id')->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -27,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('course_lessons');
+        Schema::dropIfExists('admins');
     }
 };
