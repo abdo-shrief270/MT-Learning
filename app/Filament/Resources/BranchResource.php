@@ -20,7 +20,7 @@ class BranchResource extends Resource
     protected static ?string $navigationLabel = 'Branches';
     protected static ?int $navigationSort = 1;
     protected static ?string $navigationGroup = 'Course Management';
-    protected static ?string $navigationIcon = 'heroicon-o-tag';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard';
 
     public static function form(Form $form): Form
     {
