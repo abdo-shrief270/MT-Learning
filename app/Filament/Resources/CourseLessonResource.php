@@ -20,7 +20,7 @@ class CourseLessonResource extends Resource
     protected static ?string $navigationLabel = 'Course Lessons';
     protected static ?int $navigationSort = 3;
     protected static ?string $navigationGroup = 'Course Management';
-    protected static ?string $navigationIcon = 'heroicon-o-video-camera';
+    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-oval-left-ellipsis';
 
     public static function form(Form $form): Form
     {

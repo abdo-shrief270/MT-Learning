@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\MeetingResource\Pages;
 use App\Filament\Resources\MeetingResource\RelationManagers;
+use App\Models\Course;
+use App\Models\CourseLesson;
 use App\Models\Meeting;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -20,21 +22,30 @@ class MeetingResource extends Resource
     protected static ?string $model = Meeting::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-video-camera';
-    protected static ?string $navigationLabel = 'Manage Meetings';
-    protected static ?string $navigationGroup = 'Daily.co';
+    protected static ?string $navigationLabel = 'Lesson Meetings';
+    protected static ?string $navigationGroup = 'Course Management';
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                Forms\Components\Select::make('course_id')
+                    ->options(Course::pluck('title', 'id'))
+                    ->reactive() // Make it reactive
                     ->required()
-                    ->unique()
-                    ->rule('regex:/^[A-Za-z0-9_-]+$/')
-                    ->maxLength(255),
+                    ->afterStateUpdated(function (Forms\Set $set) {
+                        $set('lesson_id', null);
+                    }),
                 Forms\Components\Select::make('lesson_id')
-                    ->relationship('lesson', 'title')
-                    ->required(),
+                    ->options(function (callable $get) {
+                        $courseId = $get('course_id');
+                        return $courseId ? CourseLesson::where('course_id', $courseId)->pluck('title', 'id') : [];
+                    })
+                    ->reactive() // Make it reactive
+                    ->required()
+                    ->label('Lesson')
+                    ->disabled(fn ($get) => !$get('course_id')),
             ]);
     }
 
@@ -43,7 +54,8 @@ class MeetingResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('lesson.title')
                     ->numeric()
                     ->sortable(),
@@ -66,14 +78,8 @@ class MeetingResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make()
                     ->label('View Meeting')
-                    ->url(fn ($record) => route('filament.resources.meeting-resource.view', ['meeting' => $record->id]))
+                    ->url(fn ($record) => $record->url)
                     ->openUrlInNewTab(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 
@@ -84,12 +90,16 @@ class MeetingResource extends Resource
         ];
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListMeetings::route('/'),
             'create' => Pages\CreateMeeting::route('/create'),
-            'view' => Pages\ViewMeeting::route('/{record}/view'),
         ];
     }
 }

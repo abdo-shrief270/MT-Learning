@@ -26,10 +26,22 @@ class DailyService
         return $response->json();
     }
 
-    public function getMeeting($roomName)
+    public function getMeeting($meetingId)
     {
         $response = Http::withToken($this->apiKey)
-            ->get("https://api.daily.co/v1/rooms/{$roomName}");
+            ->get("https://api.daily.co/v1/meetings/{$meetingId}");
+        return $response->json();
+    }
+    public function getMeetings()
+    {
+        $response = Http::withToken($this->apiKey)
+            ->get("https://api.daily.co/v1/meetings");
+        return $response->json()['data'];
+    }
+    public function deleteRoom($roomName)
+    {
+        $response = Http::withToken($this->apiKey)
+            ->delete("https://api.daily.co/v1/rooms/{$roomName}");
         return $response->json();
     }
 }
