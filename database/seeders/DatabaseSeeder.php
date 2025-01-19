@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Abdelrahman Shrief Ali',
+            'phone'=>'01270989676',
             'email' => 'dev.abdo.shrief@mt-school.online',
             'password' => bcrypt('12345678'),
             'active' => true
@@ -26,6 +27,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Ali Osama',
+            'phone'=>'01111492219',
             'email' => 'dev.ali@mt-school.online',
             'password' => bcrypt('12345678'),
             'active' => true
@@ -33,6 +35,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Mahmoud El-toukhy',
+            'phone'=>'01113261067',
             'email' => 'ceo.mahmoud@mt-school.online',
             'password' => bcrypt('12345678'),
             'active' => true
