@@ -42,6 +42,7 @@ class MeetingResource extends Resource
                         $courseId = $get('course_id');
                         return $courseId ? CourseLesson::where('course_id', $courseId)->pluck('title', 'id') : [];
                     })
+                    ->unique()
                     ->reactive() // Make it reactive
                     ->required()
                     ->label('Lesson')
