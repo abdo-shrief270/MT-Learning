@@ -2,11 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Mail\NewUserMail;
 use App\Models\Meeting;
 use App\Services\DailyService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Mail;
 
 class DeleteClosedMeetings implements ShouldQueue
 {
@@ -33,6 +35,9 @@ class DeleteClosedMeetings implements ShouldQueue
 
         foreach($grouped as $roomName=>$meetings)
         {
+            if(!Meeting::where('name',$roomName)->count()>0){
+                continue;
+            }
             $delete=true;
             foreach ($meetings as $meeting){
                 if($meeting['ongoing']){
@@ -42,6 +47,8 @@ class DeleteClosedMeetings implements ShouldQueue
             if($delete){
                 $this->dailyService->deleteRoom($roomName);
                 Meeting::where('name', $roomName)->delete();
+                Mail::to('abdo.shrief270@gmail.com')->send(new NewUserMail('Meeting: '.$roomName.' has been deleted'));
+
             }
         }
 

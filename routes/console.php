@@ -3,4 +3,4 @@
 use App\Jobs\DeleteClosedMeetings;
 use Illuminate\Support\Facades\Schedule;
 
-Schedule::job(new DeleteClosedMeetings())->everyFiveMinutes();
+Schedule::job(new DeleteClosedMeetings())->everyTwoHours();

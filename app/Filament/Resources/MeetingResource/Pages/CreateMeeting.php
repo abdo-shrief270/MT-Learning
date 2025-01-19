@@ -23,7 +23,7 @@ class CreateMeeting extends CreateRecord
     {
         $course=Course::find($data['course_id']);
         $lesson=CourseLesson::find($data['lesson_id']);
-        $data['name']=Str::slug($lesson->title);
+        $data['name']=Str::slug($course->title.'_'.$lesson->title.'_'.now());
         $dailyService=new DailyService;
         $response = $dailyService->createMeeting([
             'name' => $data['name'],
