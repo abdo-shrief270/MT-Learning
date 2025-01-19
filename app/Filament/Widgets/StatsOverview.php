@@ -22,8 +22,7 @@ class StatsOverview extends BaseWidget
             Stat::make('Roles', Role::count())
                 ->icon('heroicon-o-shield-check')
                 ->description('All Filament Shield Roles')
-                ->descriptionColor('primary')
-                ->url(''),
+                ->descriptionColor('primary'),
             Stat::make('Super Admins', User::role('super_admin')->count())
                 ->icon('heroicon-o-users'),
             Stat::make('admins', User::role('admin')->count())
