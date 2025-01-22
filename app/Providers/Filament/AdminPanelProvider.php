@@ -16,6 +16,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
+use FilipFonal\FilamentLogManager\FilamentLogManager;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -25,6 +26,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Joaopaulolndev\FilamentEditEnv\FilamentEditEnvPlugin;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Rmsramos\Activitylog\ActivitylogPlugin;
+use Vormkracht10\FilamentMails\FilamentMailsPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -61,6 +63,8 @@ class AdminPanelProvider extends PanelProvider
                 VerifyActivationUser::class,
             ])
             ->plugins([
+                FilamentMailsPlugin::make(),
+                FilamentLogManager::make(),
                 FilamentShieldPlugin::make(),
                 FilamentEditEnvPlugin::make()
                     ->showButton(fn () => auth()->user()->id === 1)
