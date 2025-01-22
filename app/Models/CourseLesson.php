@@ -12,7 +12,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class CourseLesson extends Model
 {
     use LogsActivity;
-    protected $fillable =['title','image','description','course_id','thumbnail','active','link'];
+    protected $fillable =['title','description','course_id','thumbnail','active','link'];
     public function course():BelongsTo
     {
         return $this->belongsTo(Course::class);
@@ -20,6 +20,6 @@ class CourseLesson extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['title','image','description','course_id','thumbnail','active','link']);
+            ->logOnly(['title','description','course_id','thumbnail','active','link']);
     }
 }
