@@ -16,7 +16,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements FilamentUser , HasAvatar , MustVerifyEmail
 {
     use HasFactory, Notifiable,HasRoles;
-    protected $fillable = ['name','email','phone','password','active','avatar_url','custom_fields'];
+    protected $fillable = ['name','email','phone','password','active','avatar_url','email_verified_at'];
 
     public function canAccessPanel(Panel $panel): bool
     {
