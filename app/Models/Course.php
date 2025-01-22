@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Course extends Model
 {
-    protected $fillable =['title','image','description','branch_id','instructor_id','price','discount_type','discount_amount','active','started_at','type','thumbnail','max_students'];
+    use LogsActivity;
+    protected $fillable =['title','description','branch_id','instructor_id','price','discount_type','discount_amount','active','started_at','type','thumbnail','max_students'];
 
     public function branch():BelongsTo
     {
@@ -26,5 +29,10 @@ class Course extends Model
     public function days():HasMany
     {
         return $this->hasMany(CourseDay::class);
+    }
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['title','description','branch_id','instructor_id','price','discount_type','discount_amount','active','started_at','type','thumbnail','max_students']);
     }
 }
