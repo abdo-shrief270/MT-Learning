@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('thumbnail');
             $table->string('title');
+            $table->text('link')->nullable();
             $table->text('description');
             $table->foreignId('course_id')->constrained('courses','id')->cascadeOnDelete();
             $table->boolean('active')->default(false);

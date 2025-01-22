@@ -14,7 +14,11 @@ class EditCourseLesson extends EditRecord
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $record = $this->getRecord();
-        $data=S3UploadService::upload($data, 'thumbnail', 'courseLessons',$record,true);
+        $data=S3UploadService::upload($data, 'thumbnail', 'courseLessons',$record,isset($record->thumbnail));
+        if(isset($data['link']))
+        {
+            return S3UploadService::upload($data, 'link', 'courseLessons',$record,isset($record->link));
+        }
         return $data;
     }
     protected function getRedirectUrl(): string

@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CourseResource\Pages;
 use App\Filament\Resources\CourseResource\RelationManagers;
 use App\Models\Course;
+use App\Models\CourseLesson;
+use App\Services\S3UploadService;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -33,7 +35,7 @@ class CourseResource extends Resource
                     ->columnSpanFull()
                     ->schema([
                         Forms\Components\Wizard\Step::make('Basic Information')
-                             ->schema(self::getBasicInformation())
+                            ->schema(self::getBasicInformation())
                             ->icon('heroicon-o-information-circle'),
                         Forms\Components\Wizard\Step::make('Pricing Details')
                             ->schema(self::getPricingDetails())
@@ -41,11 +43,14 @@ class CourseResource extends Resource
                         Forms\Components\Wizard\Step::make('Students and Start Time Details')
                             ->schema(self::getTimeAndStudentsDetails())
                             ->icon('heroicon-o-user'),
-                        Forms\Components\Wizard\Step::make('Course Days Details')
+                        Forms\Components\Wizard\Step::make('Course Days')
                             ->schema(self::getCourseDaysDetails())
                             ->icon('heroicon-o-clock')
                             ->reactive()
                             ->visible(fn (Get $get) => $get('type') != 'recorded'),
+                        Forms\Components\Wizard\Step::make('Course Lessons')
+                            ->schema(self::getCourseLessonsDetails())
+                            ->icon('heroicon-o-video-camera'),
                     ])->skippable(),
             ]);
     }
@@ -88,9 +93,75 @@ class CourseResource extends Resource
                             ->minutesStep(30)
                             ->after('start_time')
                             ->required(),
-                    ])
+                    ])->orderColumn('id')
         ];
     }
+
+    public static function getCourseLessonsDetails():array
+    {
+        return [
+            Forms\Components\Repeater::make('lessons')
+                ->relationship('lessons')
+                ->schema([
+                    Forms\Components\Wizard::make()
+                    ->schema(
+                        [
+                            Forms\Components\Wizard\Step::make('Lesson Image')
+                            ->schema([
+                                Forms\Components\FileUpload::make('thumbnail')
+                                    ->label('Lesson Thumbnail')
+                                    ->disk('s3')
+                                    ->directory('courseLessons')
+                                    ->preserveFilenames()
+                                    ->storeFiles(false)
+                                    ->visibility('public')
+                                    ->required(),
+                            ]),
+
+                            Forms\Components\Wizard\Step::make('Lesson Details')
+                            ->schema([
+                                Forms\Components\FileUpload::make('link')
+                                    ->visible(fn (Forms\Get $get) => $get('../../type') === 'recorded')
+                                    ->label('Lesson Video')
+                                    ->reactive()
+                                    ->disk('s3')
+                                    ->directory('courseLessons')
+                                    ->preserveFilenames()
+                                    ->storeFiles(false)
+                                    ->visibility('public')
+                                    ->required(fn (Forms\Get $get) => $get('../../type') === 'recorded')
+                                    ->maxSize(24576),
+                                Forms\Components\TextInput::make('title')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\RichEditor::make('description')
+                                    ->required()
+                                    ->columns(1),
+                            ])
+                        ]
+                    )
+                    ->skippable()
+                    ->columnSpanFull(),
+                ])->orderColumn('id')
+                ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
+                    $data=S3UploadService::upload($data, 'thumbnail', 'courseLessons');
+                    if(isset($data['link']))
+                    {
+                        return S3UploadService::upload($data, 'link', 'courseLessons');
+                    }
+                    return $data;
+                })
+                ->mutateRelationshipDataBeforeSaveUsing(function (array $data): array {
+                    $data=S3UploadService::upload($data, 'thumbnail', 'courseLessons');
+                    if(isset($data['link']))
+                    {
+                        return S3UploadService::upload($data, 'link', 'courseLessons');
+                    }
+                    return $data;
+                }),
+        ];
+    }
+
 
     public static function getPricingDetails():array
     {
@@ -129,6 +200,7 @@ class CourseResource extends Resource
     {
         return [
             Forms\Components\FileUpload::make('thumbnail')
+                ->required()
                 ->label('Course Thumbnail')
                 ->disk('s3')
                 ->directory('courses')

@@ -36,11 +36,14 @@ class CreateCourse extends CreateRecord
             Step::make('Students and Start Time Details')
                 ->schema([Section::make()->schema(CourseResource::getTimeAndStudentsDetails())->columns()])
                 ->icon('heroicon-o-user'),
-            Step::make('Course Days Details')
+            Step::make('Course Days')
                 ->schema([Section::make()->schema(CourseResource::getCourseDaysDetails())->columns()])
                 ->icon('heroicon-o-clock')
                 ->reactive()
                 ->visible(fn (Get $get) => $get('type') != 'recorded'),
+            Step::make('Course Lessons')
+                ->schema([Section::make()->schema(CourseResource::getCourseLessonsDetails())->columns()])
+                ->icon('heroicon-o-video-camera'),
         ];
     }
     protected function mutateFormDataBeforeCreate(array $data): array

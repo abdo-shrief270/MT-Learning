@@ -12,7 +12,12 @@ class CreateCourseLesson extends CreateRecord
     protected static string $resource = CourseLessonResource::class;
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        return S3UploadService::upload($data, 'thumbnail', 'courseLessons');
+        $data=S3UploadService::upload($data, 'thumbnail', 'courseLessons');
+        if(isset($data['link']))
+        {
+            return S3UploadService::upload($data, 'link', 'courseLessons');
+        }
+        return $data;
     }
     protected function getRedirectUrl(): string
     {
