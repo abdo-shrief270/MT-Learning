@@ -14,6 +14,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
 
 class UserResource extends Resource
 {
@@ -30,6 +32,15 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\FileUpload::make('avatar_url')
+                    ->label('User Avatar')
+                    ->disk('s3')
+                    ->directory('avatars')
+                    ->image()
+                    ->preserveFilenames()
+                    ->storeFiles(false)
+                    ->visibility('public')
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->minLength(3)
@@ -37,23 +48,15 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->unique(ignoreRecord: true)
                     ->email()
-                    ->required()
+                    ->required(Pages\CreateUser::isCurrentPage())
                     ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
+                PhoneInput::make('phone')
+                    ->label('Phone Number')
                     ->unique(ignoreRecord: true)
-                    ->tel()
-                    ->maxLength(255)
-                    ->default(null),
+                    ->required(Pages\CreateUser::isCurrentPage()),
                 Forms\Components\Select::make('roles')
                     ->options(fn () => \Spatie\Permission\Models\Role::query()->orderBy('id', 'ASC')->pluck('name', 'name'))
                     ->multiple(),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required(Pages\CreateUser::isCurrentPage())
-                    ->minLength(8)
-                    ->maxLength(255),
-                Forms\Components\Toggle::make('active')
-                    ->required(),
             ]);
     }
 
@@ -61,6 +64,8 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('avatar_url')
+                    ->circular(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
@@ -71,10 +76,10 @@ class UserResource extends Resource
                     ->state(fn($record) => $record->roles->pluck('name'))
                     ->searchable(),
                 Tables\Columns\ToggleColumn::make('active')
-                    ->visible(Auth::user()->can('edit_user')),
-                Tables\Columns\IconColumn::make('active')
-                    ->boolean()
-                    ->visible(!Auth::user()->can('edit_user')),
+                ->onColor('success')
+                ->offColor('danger')
+                ->disabled(!Gate::allows('update_user')),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->since()
                     ->sortable()
@@ -89,7 +94,8 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                ->slideOver(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

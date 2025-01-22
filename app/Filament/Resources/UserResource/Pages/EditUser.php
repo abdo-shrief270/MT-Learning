@@ -4,6 +4,7 @@ namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
 use App\Models\User;
+use App\Services\S3UploadService;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -15,20 +16,14 @@ class EditUser extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        $data['password'] = null;
-        $data['roles']=User::find($data['id'])->roles->pluck('name');
+        $data['roles']=User::find($data['id'])->roles?->pluck('name');
         return $data;
     }
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        if($data['password']==null){
-            unset($data['password']);
-        }
-        if(isset($data['password']))
-        {
-            $data['password'] = Hash::make($data['password']);
-        }
-        return $data;
+        $record=$this->getRecord();
+        unset($data['password']);
+        return S3UploadService::upload($data, 'avatar_url', 'avatars',$record,isset($record->avatar_url));
     }
     protected function handleRecordUpdate(Model $record, array $data): Model
     {

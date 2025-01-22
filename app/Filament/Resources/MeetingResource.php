@@ -31,6 +31,7 @@ class MeetingResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('course_id')
+                    ->label('Course')
                     ->options(Course::pluck('title', 'id'))
                     ->reactive() // Make it reactive
                     ->required()

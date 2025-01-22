@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('course_lessons', function (Blueprint $table) {
             $table->id();
+            $table->string('thumbnail');
             $table->string('title');
             $table->text('description');
             $table->foreignId('course_id')->constrained('courses','id')->cascadeOnDelete();
-            $table->string('video_link');
             $table->boolean('active')->default(false);
             $table->timestamps();
         });

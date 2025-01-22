@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 class Course extends Model
 {
-    protected $fillable =['title','image','description','branch_id','instructor_id','price','discount_type','discount_amount','active'];
+    protected $fillable =['title','image','description','branch_id','instructor_id','price','discount_type','discount_amount','active','started_at','type','thumbnail','max_students'];
 
     public function branch():BelongsTo
     {
@@ -22,5 +22,9 @@ class Course extends Model
     public function lessons():HasMany
     {
         return $this->hasMany(CourseLesson::class);
+    }
+    public function days():HasMany
+    {
+        return $this->hasMany(CourseDay::class);
     }
 }

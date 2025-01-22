@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
+use App\Services\S3UploadService;
 use Filament\Actions;
 use Filament\Facades\Filament;
 use Filament\Resources\Pages\CreateRecord;
@@ -16,8 +17,8 @@ class CreateUser extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['password'] = Hash::make($data['password']);
-        return $data;
+        $data['password'] = Hash::make('12345678');
+        return S3UploadService::upload($data, 'avatar_url', 'avatars');
     }
     protected function handleRecordCreation(array $data): Model
     {

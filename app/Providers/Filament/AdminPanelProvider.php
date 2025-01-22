@@ -3,6 +3,9 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Resources\Auth\CustomLogin;
+use App\Filament\Resources\Auth\EditProfile;
+use App\Filament\Resources\Auth\Register;
+use App\Http\Middleware\VerifyActivationUser;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -19,6 +22,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Joaopaulolndev\FilamentEditEnv\FilamentEditEnvPlugin;
+use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -52,16 +57,26 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                VerifyActivationUser::class,
             ])
             ->plugins([
                 FilamentShieldPlugin::make(),
+                FilamentEditEnvPlugin::make()
+                    ->showButton(fn () => auth()->user()->id === 1)
+                    ->setIcon('heroicon-o-cog'),
             ])
             ->authMiddleware([
                 Authenticate::class,
+                VerifyActivationUser::class,
             ])
+            ->unsavedChangesAlerts()
             ->sidebarFullyCollapsibleOnDesktop()
             ->spa()
-            ->databaseNotifications();
+            ->databaseNotifications()
+            ->registration(Register::class)
+            ->passwordReset()
+            ->emailVerification()
+            ->profile(EditProfile::class,isSimple: false);
     }
 }
 

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
+            $table->string('thumbnail');
             $table->string('title');
             $table->text('description');
             $table->foreignId('branch_id')->constrained('branches','id')->cascadeOnDelete();
@@ -20,6 +21,9 @@ return new class extends Migration
             $table->integer('price');
             $table->enum('discount_type', ['percentage', 'amount']);
             $table->integer('discount_amount');
+            $table->date('started_at')->nullable();
+            $table->enum('type',['online','recorded','offline'])->default('online');
+            $table->integer('max_students')->default(0);
             $table->boolean('active')->default(false);
             $table->timestamps();
         });

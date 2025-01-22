@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CourseLesson extends Model
 {
-    protected $fillable =['title','image','description','course_id','video_link','active'];
+    protected $fillable =['title','image','description','course_id','thumbnail','active'];
     public function course():BelongsTo
     {
         return $this->belongsTo(Course::class);
