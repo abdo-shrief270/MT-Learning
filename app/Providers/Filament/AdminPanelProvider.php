@@ -24,6 +24,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Joaopaulolndev\FilamentEditEnv\FilamentEditEnvPlugin;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
+use Rmsramos\Activitylog\ActivitylogPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -64,6 +65,16 @@ class AdminPanelProvider extends PanelProvider
                 FilamentEditEnvPlugin::make()
                     ->showButton(fn () => auth()->user()->id === 1)
                     ->setIcon('heroicon-o-cog'),
+                ActivitylogPlugin::make()->label('Log')
+                    ->pluralLabel('Logs')
+                    ->navigationItem(true)
+                    ->navigationGroup('Activity Log')
+                    ->navigationIcon('heroicon-o-exclamation-triangle')
+                    ->navigationCountBadge(true)
+                    ->navigationSort(2)
+                    ->authorize(
+                        fn () => auth()->user()->id === 1
+                    ),
             ])
             ->authMiddleware([
                 Authenticate::class,
