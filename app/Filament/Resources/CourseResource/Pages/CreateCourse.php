@@ -7,6 +7,7 @@ use App\Services\S3UploadService;
 use Filament\Actions;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Wizard\Step;
+use Filament\Forms\Get;
 use Filament\Resources\Concerns\HasTabs;
 use Filament\Resources\Pages\Concerns\HasWizard;
 use Filament\Resources\Pages\CreateRecord;
@@ -37,7 +38,9 @@ class CreateCourse extends CreateRecord
                 ->icon('heroicon-o-user'),
             Step::make('Course Days Details')
                 ->schema([Section::make()->schema(CourseResource::getCourseDaysDetails())->columns()])
-                ->icon('heroicon-o-clock'),
+                ->icon('heroicon-o-clock')
+                ->reactive()
+                ->visible(fn (Get $get) => $get('type') != 'recorded'),
         ];
     }
     protected function mutateFormDataBeforeCreate(array $data): array

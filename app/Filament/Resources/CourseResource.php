@@ -8,6 +8,7 @@ use App\Models\Course;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -42,7 +43,9 @@ class CourseResource extends Resource
                             ->icon('heroicon-o-user'),
                         Forms\Components\Wizard\Step::make('Course Days Details')
                             ->schema(self::getCourseDaysDetails())
-                            ->icon('heroicon-o-clock'),
+                            ->icon('heroicon-o-clock')
+                            ->reactive()
+                            ->visible(fn (Get $get) => $get('type') != 'recorded'),
                     ])->skippable(),
             ]);
     }
@@ -132,7 +135,16 @@ class CourseResource extends Resource
                 ->image()
                 ->preserveFilenames()
                 ->storeFiles(false)
-                ->visibility('public'),
+                ->visibility('public')
+                ->columnSpanFull(),
+            Forms\Components\Select::make('type')
+                ->options([
+                    'online'=>'Online',
+                    'recorded'=>'Recorded',
+                    'offline'=>'Offline'
+                ])
+                ->reactive()
+                ->required(),
             Forms\Components\TextInput::make('title')
                 ->required()
                 ->maxLength(255),
