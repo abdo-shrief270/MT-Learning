@@ -20,6 +20,6 @@ class CourseLesson extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['name', 'active']);
+            ->logOnly(['title','image','description','course_id','thumbnail','active','link']);
     }
 }
