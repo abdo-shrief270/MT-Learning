@@ -17,15 +17,15 @@ class DatabaseSeeder extends Seeder
         Artisan::call('shield:install admin');
         Artisan::call('shield:generate --all --panel=admin');
 
-        User::factory()->create([
+        User::create([
             'name' => 'Abdelrahman Shrief Ali',
             'phone'=>'01270989676',
-            'email' => 'dev.abdo.shrief@mt-school.online',
+            'email' => 'abdo.shrief270@gmail.com',
             'password' => bcrypt('12345678'),
             'active' => true
         ]);
 
-        User::factory()->create([
+        User::create([
             'name' => 'Ali Osama',
             'phone'=>'01111492219',
             'email' => 'dev.ali@mt-school.online',
@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
             'active' => true
         ]);
 
-        User::factory()->create([
+        User::create([
             'name' => 'Mahmoud El-toukhy',
             'phone'=>'01113261067',
             'email' => 'ceo.mahmoud@mt-school.online',
