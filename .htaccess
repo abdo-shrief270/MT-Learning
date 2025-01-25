@@ -3,7 +3,7 @@
     RewriteEngine On
 
     # Set PHP timezone to Africa/Cairo
-    php_value date.timezone "Africa/Cairo"
+    #php_value date.timezone "Africa/Cairo"
 
     RewriteCond %{REQUEST_URI} !^/public/
     RewriteCond %{REQUEST_FILENAME} !-d
