@@ -2,7 +2,7 @@
 
 use App\Models\Mail;
 use Vormkracht10\Mails\Models\MailAttachment;
-use App\Models\MailEvent;
+use App\Models\Event;
 
 return [
 
