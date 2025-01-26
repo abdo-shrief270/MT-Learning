@@ -1,8 +1,8 @@
 <?php
 
-use Vormkracht10\Mails\Models\Mail;
+use App\Models\Mail;
 use Vormkracht10\Mails\Models\MailAttachment;
-use Vormkracht10\Mails\Models\MailEvent;
+use App\Models\MailEvent;
 
 return [
 
@@ -10,7 +10,7 @@ return [
 
     'models' => [
         'mail' => Mail::class,
-        'event' => MailEvent::class,
+        'event' => Event::class,
         'attachment' => MailAttachment::class,
     ],
 
@@ -92,11 +92,11 @@ return [
 
     'notifications' => [
         'mail' => [
-            'to' => ['test@example.com'],
+            'to' => ['abd.shrief270@gmail.com'],
         ],
 
         'discord' => [
-            // 'to' => ['1234567890'],
+//             'to' => ['1234567890'],
         ],
 
         'slack' => [

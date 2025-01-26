@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class PaymentType extends Model
+class AttachmentType extends Model
 {
     use LogsActivity;
-    protected $fillable =['title','active'];
+    protected $fillable =['name','active'];
 
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['title', 'active']);
+            ->logOnly(['name', 'active']);
     }
 }

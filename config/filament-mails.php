@@ -1,11 +1,11 @@
 <?php
 
-use Vormkracht10\FilamentMails\Resources\EventResource;
-use Vormkracht10\FilamentMails\Resources\MailResource;
+use App\Filament\Resources\CustomMailResource;
+use App\Filament\Resources\CustomEventResource;
 
 return [
     'resources' => [
-        'mail' => MailResource::class,
-        'event' => EventResource::class,
+        'mail' => CustomMailResource::class,
+        'event' => CustomEventResource::class,
     ],
 ];
