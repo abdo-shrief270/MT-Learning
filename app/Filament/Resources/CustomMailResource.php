@@ -24,4 +24,8 @@ class CustomMailResource extends BaseMailResource
     {
         return __('Mails');
     }
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 }

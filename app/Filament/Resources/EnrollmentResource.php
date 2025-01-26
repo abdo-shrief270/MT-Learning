@@ -90,4 +90,8 @@ class EnrollmentResource extends Resource
             'edit' => Pages\EditEnrollment::route('/{record}/edit'),
         ];
     }
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 }

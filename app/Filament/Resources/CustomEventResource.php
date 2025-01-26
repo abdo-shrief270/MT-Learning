@@ -35,4 +35,8 @@ class CustomEventResource extends BaseEventResource
     {
         return __('Events');
     }
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 }

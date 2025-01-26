@@ -99,4 +99,8 @@ class BillResource extends Resource
             'edit' => Pages\EditBill::route('/{record}/edit'),
         ];
     }
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 }
