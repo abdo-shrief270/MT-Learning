@@ -22,6 +22,11 @@ Options -Indexes
     RewriteRule ^ public/index.php [L]
 </IfModule>
 
+<Files "index.php">
+    Order allow,deny
+    Allow from all
+</Files>
+
 # Enable gzip compression for better performance
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json
