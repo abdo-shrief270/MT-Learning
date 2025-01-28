@@ -22,7 +22,6 @@ class Register extends \Filament\Pages\Auth\Register
 {
     protected function mutateFormDataBeforeRegister(array $data): array
     {
-        $data['password'] = Hash::make($data['password']);
         return S3UploadService::upload($data, 'avatar_url', 'avatars');
     }
     protected function handleRegistration(array $data): Model

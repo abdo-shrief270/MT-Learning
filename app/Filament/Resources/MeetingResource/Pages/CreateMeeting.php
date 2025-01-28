@@ -28,7 +28,7 @@ class CreateMeeting extends CreateRecord
         $response = $dailyService->createMeeting([
             'name' => $data['name'],
         ]);
-        Mail::to('abdo.shrief270@gmail.com')->send(new NewUserMail('New Meeting: '.$data['name'].' for course: '.$course->title));
+        //Mail::to('abdo.shrief270@gmail.com')->send(new NewUserMail('New Meeting: '.$data['name'].' for course: '.$course->title));
         $data['url'] =$response['url'];
         return $data;
     }

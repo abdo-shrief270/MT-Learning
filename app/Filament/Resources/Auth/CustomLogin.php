@@ -4,12 +4,15 @@ namespace App\Filament\Resources\Auth;
 
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Get;
 use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Pages\Auth\Login;
 use Illuminate\Validation\ValidationException;
+use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
 
 class CustomLogin extends Login
 {
@@ -19,7 +22,9 @@ class CustomLogin extends Login
             'form' => $this->form(
                 $this->makeForm()
                     ->schema([
-                        $this->getLoginFormComponent(),
+                        $this->getLoginTypeFormComponent(),
+                        $this->getLoginEmailFormComponent(),
+                        $this->getLoginPhoneFormComponent(),
                         $this->getPasswordFormComponent(),
                         $this->getRememberFormComponent(),
                     ])
@@ -28,13 +33,30 @@ class CustomLogin extends Login
         ];
     }
 
-    protected function getLoginFormComponent(): Component
+    protected function getLoginTypeFormComponent(): Component
+    {
+        return Checkbox::make('type')
+            ->label(__('login with phone ?'))
+            ->live();
+    }
+    protected function getLoginEmailFormComponent(): Component
     {
         return TextInput::make('login')
-            ->label(__('Phone / Email Address'))
-            ->required()
+            ->label(__('Email Address'))
+            ->reactive()
+            ->visible(fn (Get $get) => (!$get('type')))
+            ->required(fn (Get $get) => (!$get('type')))
             ->autocomplete()
-            ->autofocus()
+            ->extraInputAttributes(['tabindex' => 1]);
+    }
+
+    protected function getLoginPhoneFormComponent(): Component
+    {
+        return PhoneInput::make('login')
+            ->label(__('Phone Number'))
+            ->reactive()
+            ->visible(fn (Get $get) => ($get('type')))
+            ->required(fn (Get $get) => ($get('type')))
             ->extraInputAttributes(['tabindex' => 1]);
     }
 

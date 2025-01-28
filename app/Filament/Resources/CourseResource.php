@@ -61,7 +61,10 @@ class CourseResource extends Resource
                 ->label('Course Start Date')
                 ->format('Y/m/d'),
             Forms\Components\TextInput::make('max_students')
-                ->required()
+                ->required(fn (Get $get) => $get('type') != 'recorded')
+                ->default(0)
+                ->visible(fn (Get $get) => $get('type') != 'recorded')
+                ->reactive()
                 ->numeric()
                 ->gt(0)
                 ->prefixIcon('heroicon-o-user'),
