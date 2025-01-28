@@ -2,7 +2,7 @@
 Options -Indexes
 
 # Prevent access to sensitive files
-<FilesMatch "\.(env|json|config.js|lock|gitignore|gitattributes|editorconfig|yml|xml|php|txt|md|log|sql)$">
+<FilesMatch "\.(env|json|config.js|lock|gitignore|gitattributes|editorconfig|yml|xml|txt|md|log|sql)$">
     Order allow,deny
     Deny from all
 </FilesMatch>
@@ -21,11 +21,6 @@ Options -Indexes
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ public/index.php [L]
 </IfModule>
-
-<Files "index.php">
-    Order allow,deny
-    Allow from all
-</Files>
 
 # Enable gzip compression for better performance
 <IfModule mod_deflate.c>
