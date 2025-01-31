@@ -31,7 +31,7 @@ class CreateUser extends CreateRecord
             return $this->associateRecordWithTenant($record, $tenant);
         }
         $record->save();
-        $record->assignRole($data['role']);
+        $record->assignRole($data['roles']);
         return $record;
     }
 

@@ -83,7 +83,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->unsavedChangesAlerts()
             ->sidebarFullyCollapsibleOnDesktop()
-            ->spa()
             ->databaseNotifications()
             ->registration(Register::class)
             ->passwordReset()

@@ -64,6 +64,7 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('avatar_url')
+                    ->label('User Avatar')
                     ->circular(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),

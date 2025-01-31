@@ -22,9 +22,17 @@ class Course extends Model
     {
         return $this->belongsTo(User::class,'instructor_id','id')->role('instructor');
     }
-    public function lessons():HasMany
+    public function lesson():HasMany
     {
-        return $this->hasMany(CourseLesson::class);
+        return $this->hasMany(Lesson::class);
+    }
+    public function meeting():HasMany
+    {
+        return $this->hasMany(CourseMeeting::class);
+    }
+    public function attachment():HasMany
+    {
+        return $this->hasMany(CourseAttachment::class);
     }
     public function days():HasMany
     {

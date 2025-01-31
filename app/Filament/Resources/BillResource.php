@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage;
 
 class BillResource extends Resource
 {
@@ -38,6 +39,16 @@ class BillResource extends Resource
                 Forms\Components\TextInput::make('amount')
                     ->required()
                     ->numeric(),
+                Forms\Components\FileUpload::make('image')
+                    ->required()
+                    ->label('Bill Image')
+                    ->disk('s3')
+                    ->directory('bills')
+                    ->image()
+                    ->preserveFilenames()
+                    ->storeFiles(false)
+                    ->visibility('public')
+                    ->columnSpanFull(),
                 Forms\Components\Textarea::make('notes')
                     ->columnSpanFull(),
             ]);
@@ -61,6 +72,13 @@ class BillResource extends Resource
                     ->badge()
                     ->color('success')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('image')
+                    ->toggleable()
+                    ->label('Image Link')
+                    ->state('Link')
+                    ->icon('heroicon-o-link')
+                    ->url(fn ($record) => Storage::disk(env('FILESYSTEM_DISK'))->url($record->image), true)
+                    ->openUrlInNewTab(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -87,7 +105,7 @@ class BillResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\AttachmentsRelationManager::class,
+            //
         ];
     }
 

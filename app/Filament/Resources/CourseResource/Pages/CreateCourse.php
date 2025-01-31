@@ -34,16 +34,17 @@ class CreateCourse extends CreateRecord
                 ->schema([Section::make()->schema(CourseResource::getPricingDetails())->columns()])
                 ->icon('heroicon-o-currency-dollar'),
             Step::make('Students and Start Time Details')
+                ->visible(fn (Get $get) => $get('type') != 'recorded')
                 ->schema([Section::make()->schema(CourseResource::getTimeAndStudentsDetails())->columns()])
                 ->icon('heroicon-o-user'),
-            Step::make('Course Days')
-                ->schema([Section::make()->schema(CourseResource::getCourseDaysDetails())->columns()])
-                ->icon('heroicon-o-clock')
-                ->reactive()
-                ->visible(fn (Get $get) => $get('type') != 'recorded'),
-            Step::make('Course Lessons')
-                ->schema([Section::make()->schema(CourseResource::getCourseLessonsDetails())->columns()])
-                ->icon('heroicon-o-video-camera'),
+//            Step::make('Course Days')
+//                ->schema([Section::make()->schema(CourseResource::getCourseDaysDetails())->columns()])
+//                ->icon('heroicon-o-clock')
+//                ->reactive()
+//                ->visible(fn (Get $get) => $get('type') != 'recorded'),
+//            Step::make('Course Lessons')
+//                ->schema([Section::make()->schema(CourseResource::getCourseLessonsDetails())->columns()])
+//                ->icon('heroicon-o-video-camera'),
         ];
     }
     protected function mutateFormDataBeforeCreate(array $data): array

@@ -32,6 +32,6 @@ class User extends Authenticatable implements FilamentUser , HasAvatar , MustVer
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['name','email','phone','password','active','avatar_url']);
+            ->logOnly(['name','email','phone','password','active','avatar_url','email_verified_at']);
     }
 }

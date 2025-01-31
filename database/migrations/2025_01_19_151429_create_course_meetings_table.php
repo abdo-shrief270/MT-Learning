@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attachment_types', function (Blueprint $table) {
+        Schema::create('course_meetings', function (Blueprint $table) {
             $table->id();
-            $table->text('name');
+            $table->string('title');
+            $table->foreignId('course_id')->constrained('courses','id')->cascadeOnDelete();
+            $table->text('url')->nullable();
+            $table->enum('status', ['pending', 'ongoing', 'completed'])->default('pending');
+            $table->dateTime('start_time');
             $table->timestamps();
         });
     }
@@ -23,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attachment_types');
+        Schema::dropIfExists('meetings');
     }
 };

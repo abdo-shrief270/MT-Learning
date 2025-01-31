@@ -13,12 +13,12 @@ use App\Models\BillAttachment;
 class Bill extends Model
 {
     use LogsActivity;
-    protected $fillable =['title','bill_type_id','added_by','payment_id','amount','notes','active'];
+    protected $fillable =['title','bill_type_id','added_by','payment_id','amount','image','notes','active'];
 
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['title','bill_type_id','added_by','payment_id','amount','notes','active']);
+            ->logOnly(['title','bill_type_id','added_by','payment_id','amount','image','notes','active']);
     }
 
     public function billType()
@@ -32,9 +32,5 @@ class Bill extends Model
     public function adder()
     {
         return $this->belongsTo(User::class,'added_by','id');
-    }
-    public function attachments()
-    {
-        return $this->hasMany(BillAttachment::class);
     }
 }

@@ -95,7 +95,7 @@ class PaymentPolicy
      */
     public function replicate(User $user, Payment $payment): bool
     {
-        return $user->can('replicate_payment');
+        return $user->can('{{ Replicate }}');
     }
 
     /**
@@ -103,6 +103,6 @@ class PaymentPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_payment');
+        return $user->can('{{ Reorder }}');
     }
 }

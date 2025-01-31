@@ -95,7 +95,7 @@ class CourseLessonPolicy
      */
     public function replicate(User $user, CourseLesson $courseLesson): bool
     {
-        return $user->can('replicate_course::lesson');
+        return $user->can('{{ Replicate }}');
     }
 
     /**
@@ -103,6 +103,6 @@ class CourseLessonPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_course::lesson');
+        return $user->can('{{ Reorder }}');
     }
 }

@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('course_lessons', function (Blueprint $table) {
+        Schema::create('lessons', function (Blueprint $table) {
             $table->id();
-            $table->string('thumbnail');
+            $table->string('thumbnail')->nullable();
+            $table->integer('sort');
             $table->string('title');
             $table->text('link')->nullable();
+            $table->integer('duration')->default(0);
             $table->text('description');
             $table->foreignId('course_id')->constrained('courses','id')->cascadeOnDelete();
             $table->boolean('active')->default(false);

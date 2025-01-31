@@ -19,25 +19,28 @@ class DatabaseSeeder extends Seeder
 
         User::create([
             'name' => 'Abdelrahman Shrief Ali',
-            'phone'=>'01270989676',
+            'phone'=>'+201270989676',
             'email' => 'abdo.shrief270@gmail.com',
             'password' => bcrypt('12345678'),
+            'email_verified_at'=>'2025-01-22 04:36:58',
             'active' => true
         ]);
 
         User::create([
             'name' => 'Ali Osama',
-            'phone'=>'01111492219',
+            'phone'=>'+201111492219',
             'email' => 'dev.ali@mt-school.online',
             'password' => bcrypt('12345678'),
+            'email_verified_at'=>'2025-01-22 04:36:58',
             'active' => true
         ]);
 
         User::create([
             'name' => 'Mahmoud El-toukhy',
-            'phone'=>'01113261067',
+            'phone'=>'+201113261067',
             'email' => 'ceo.mahmoud@mt-school.online',
             'password' => bcrypt('12345678'),
+            'email_verified_at'=>'2025-01-22 04:36:58',
             'active' => true
         ]);
 
@@ -51,6 +54,10 @@ class DatabaseSeeder extends Seeder
         ]);
         \Spatie\Permission\Models\Role::create([
             'name'=>'student',
+            'guard_name'=>'web'
+        ]);
+        \Spatie\Permission\Models\Role::create([
+            'name'=>'sales',
             'guard_name'=>'web'
         ]);
 

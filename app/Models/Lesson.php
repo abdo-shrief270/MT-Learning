@@ -7,18 +7,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Meeting extends Model
+class Lesson extends Model
 {
     use LogsActivity;
-    protected $fillable = ['name','lesson_id','url'];
-
-    public function lesson():BelongsTo
+    protected $fillable =['title','description','course_id','thumbnail','active','link','sort'];
+    public function course():BelongsTo
     {
-        return $this->belongsTo(CourseLesson::class,'lesson_id','id');
+        return $this->belongsTo(Course::class);
     }
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['name','lesson_id','url']);
+            ->logOnly(['title','description','course_id','thumbnail','active','link','sort']);
     }
 }

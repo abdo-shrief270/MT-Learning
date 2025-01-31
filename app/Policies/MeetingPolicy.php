@@ -95,7 +95,7 @@ class MeetingPolicy
      */
     public function replicate(User $user, Meeting $meeting): bool
     {
-        return $user->can('replicate_meeting');
+        return $user->can('{{ Replicate }}');
     }
 
     /**
@@ -103,6 +103,6 @@ class MeetingPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_meeting');
+        return $user->can('{{ Reorder }}');
     }
 }

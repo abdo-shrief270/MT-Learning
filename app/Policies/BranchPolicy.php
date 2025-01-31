@@ -95,7 +95,7 @@ class BranchPolicy
      */
     public function replicate(User $user, Branch $branch): bool
     {
-        return $user->can('replicate_branch');
+        return $user->can('{{ Replicate }}');
     }
 
     /**
@@ -103,6 +103,6 @@ class BranchPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_branch');
+        return $user->can('{{ Reorder }}');
     }
 }

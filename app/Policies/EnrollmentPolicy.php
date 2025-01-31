@@ -95,7 +95,7 @@ class EnrollmentPolicy
      */
     public function replicate(User $user, Enrollment $enrollment): bool
     {
-        return $user->can('replicate_enrollment');
+        return $user->can('{{ Replicate }}');
     }
 
     /**
@@ -103,6 +103,6 @@ class EnrollmentPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_enrollment');
+        return $user->can('{{ Reorder }}');
     }
 }

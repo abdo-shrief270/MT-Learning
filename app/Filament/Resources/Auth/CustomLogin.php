@@ -36,7 +36,7 @@ class CustomLogin extends Login
     protected function getLoginTypeFormComponent(): Component
     {
         return Checkbox::make('type')
-            ->label(__('login with phone ?'))
+            ->label(__('login with phone'))
             ->live();
     }
     protected function getLoginEmailFormComponent(): Component

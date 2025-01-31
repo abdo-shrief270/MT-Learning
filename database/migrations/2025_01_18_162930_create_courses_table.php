@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->string('thumbnail');
+            $table->string('thumbnail')->nullable();
             $table->string('title');
             $table->text('description');
-            $table->foreignId('branch_id')->constrained('branches','id')->cascadeOnDelete();
+            $table->foreignId('branch_id')->nullable()->constrained('branches','id')->cascadeOnDelete();
             $table->foreignId('instructor_id')->constrained('users','id')->cascadeOnDelete();
             $table->integer('price');
             $table->enum('discount_type', ['percentage', 'amount']);

@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bill_attachments', function (Blueprint $table) {
+        Schema::create('course_attachments', function (Blueprint $table) {
             $table->id();
-            $table->text('value');
-            $table->foreignId('type_id')->constrained('attachment_types','id')->cascadeOnDelete();
-            $table->foreignId('bill_id')->constrained('bills','id')->cascadeOnDelete();
+            $table->string('title');
+            $table->text('link');
+            $table->foreignId('course_id')->constrained('courses','id')->cascadeOnDelete();
+            $table->foreignId('added_by')->constrained('users','id')->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bill_attachments');
+        Schema::dropIfExists('course_attachments');
     }
 };

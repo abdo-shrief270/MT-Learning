@@ -95,7 +95,7 @@ class MailPolicy
      */
     public function replicate(User $user, Mail $mail): bool
     {
-        return $user->can('replicate_custom::mail');
+        return $user->can('{{ Replicate }}');
     }
 
     /**
@@ -103,6 +103,6 @@ class MailPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_custom::mail');
+        return $user->can('{{ Reorder }}');
     }
 }

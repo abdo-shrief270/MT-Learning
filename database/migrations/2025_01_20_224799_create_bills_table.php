@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('added_by')->constrained('users','id')->cascadeOnDelete();
             $table->foreignId('payment_id')->constrained('payments','id')->cascadeOnDelete();
             $table->integer('amount');
+            $table->text('image');
             $table->text('notes')->nullable();
             $table->timestamps();
         });

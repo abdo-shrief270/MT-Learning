@@ -95,7 +95,7 @@ class BillTypePolicy
      */
     public function replicate(User $user, BillType $billType): bool
     {
-        return $user->can('replicate_bill::type');
+        return $user->can('{{ Replicate }}');
     }
 
     /**
@@ -103,6 +103,6 @@ class BillTypePolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_bill::type');
+        return $user->can('{{ Reorder }}');
     }
 }

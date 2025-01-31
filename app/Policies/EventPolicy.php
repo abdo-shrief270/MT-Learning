@@ -95,7 +95,7 @@ class EventPolicy
      */
     public function replicate(User $user, Event $event): bool
     {
-        return $user->can('replicate_custom::event');
+        return $user->can('{{ Replicate }}');
     }
 
     /**
@@ -103,6 +103,6 @@ class EventPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_custom::event');
+        return $user->can('{{ Reorder }}');
     }
 }

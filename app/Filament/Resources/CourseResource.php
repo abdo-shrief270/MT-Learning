@@ -3,20 +3,19 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CourseResource\Pages;
-use App\Filament\Resources\CourseResource\RelationManagers;
+use App\Filament\Resources\CourseResource\RelationManagers\AttachmentRelationManager;
+use App\Filament\Resources\CourseResource\RelationManagers\LessonRelationManager;
+use App\Filament\Resources\CourseResource\RelationManagers\MeetingRelationManager;
 use App\Models\Course;
-use App\Models\CourseLesson;
 use App\Services\S3UploadService;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
-use Filament\Resources\Components\Tab;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CourseResource extends Resource
 {
@@ -41,16 +40,19 @@ class CourseResource extends Resource
                             ->schema(self::getPricingDetails())
                             ->icon('heroicon-o-currency-dollar'),
                         Forms\Components\Wizard\Step::make('Students and Start Time Details')
+                            ->visible(fn (Get $get) => $get('type') != 'recorded')
                             ->schema(self::getTimeAndStudentsDetails())
                             ->icon('heroicon-o-user'),
-                        Forms\Components\Wizard\Step::make('Course Days')
-                            ->schema(self::getCourseDaysDetails())
-                            ->icon('heroicon-o-clock')
-                            ->reactive()
-                            ->visible(fn (Get $get) => $get('type') != 'recorded'),
-                        Forms\Components\Wizard\Step::make('Course Lessons')
-                            ->schema(self::getCourseLessonsDetails())
-                            ->icon('heroicon-o-video-camera'),
+//                        Forms\Components\Wizard\Step::make('Course Days')
+//                            ->schema(self::getCourseDaysDetails())
+//                            ->icon('heroicon-o-clock')
+//                            ->reactive()
+//                            ->visible(fn (Get $get) => $get('type') != 'recorded'),
+//                        Forms\Components\Wizard\Step::make('Course Lessons')
+//                            ->schema(self::getCourseLessonsDetails())
+//                            ->icon('heroicon-o-video-camera')
+//                            ->reactive()
+//                            ->visible(fn (Get $get) => $get('type') == 'online'),
                     ])->skippable(),
             ]);
     }
@@ -58,6 +60,8 @@ class CourseResource extends Resource
     {
         return [
             Forms\Components\DatePicker::make('started_at')
+                ->visible(fn (Get $get) => $get('type') != 'recorded')
+                ->required(fn (Get $get) => $get('type') != 'recorded')
                 ->label('Course Start Date')
                 ->format('Y/m/d'),
             Forms\Components\TextInput::make('max_students')
@@ -119,7 +123,8 @@ class CourseResource extends Resource
                                     ->storeFiles(false)
                                     ->visibility('public')
                                     ->required(),
-                            ]),
+                            ])
+                            ->columnSpanFull(),
 
                             Forms\Components\Wizard\Step::make('Lesson Details')
                             ->schema([
@@ -141,6 +146,7 @@ class CourseResource extends Resource
                                     ->required()
                                     ->columns(1),
                             ])
+                            ->columnSpanFull(),
                         ]
                     )
                     ->skippable()
@@ -223,12 +229,15 @@ class CourseResource extends Resource
             Forms\Components\TextInput::make('title')
                 ->required()
                 ->maxLength(255),
-            Forms\Components\Select::make('branch_id')
-                ->relationship('branch', 'name')
-                ->required(),
             Forms\Components\Select::make('instructor_id')
                 ->relationship('instructor', 'name')
+                ->searchable()
                 ->required(),
+            Forms\Components\Select::make('branch_id')
+                ->relationship('branch', 'name')
+                ->required(fn (Get $get) => $get('type') != 'recorded')
+                ->reactive()
+                ->visible(fn (Get $get) => $get('type') != 'recorded'),
             Forms\Components\RichEditor::make('description')
                 ->required()
                 ->columnSpanFull(),
@@ -236,35 +245,66 @@ class CourseResource extends Resource
     }
     public static function table(Table $table): Table
     {
+
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('thumbnail')
                     ->alignCenter()
-                    ->circular(),
+                    ->circular()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('title')
                     ->alignCenter()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('branch.name')
+                    ->state(fn($record)=>$record->branch->name)
                     ->alignCenter()
-                    ->sortable(),
+                    ->sortable()
+                    ->hidden(fn ($livewire) => $livewire->activeTab !== 'offline')
+                    ->toggleable(),
+
                 Tables\Columns\TextColumn::make('instructor.name')
                     ->alignCenter()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('type')
-                    ->alignCenter()
-                    ->searchable(),
+                    ->sortable()
+                    ->toggleable(),
+
                 Tables\Columns\TextColumn::make('Lessons Count')
-                    ->state(fn($record)=>$record->lessons->count())
+                    ->state(fn($record) => $record->lesson->count())
+                    ->hidden(fn ($livewire) => $livewire->activeTab !== 'recorded')
                     ->numeric()
                     ->alignCenter()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
+
+                Tables\Columns\TextColumn::make('Meetings Count')
+                    ->state(fn($record) => $record->meeting->count())
+                    ->hidden(fn ($livewire) => $livewire->activeTab !== 'online')
+                    ->numeric()
+                    ->alignCenter()
+                    ->sortable()
+                    ->toggleable(),
+
+                Tables\Columns\TextColumn::make('Attachments Count')
+                    ->state(fn($record) => $record->attachment->count())
+                    ->hidden(fn ($livewire) => $livewire->activeTab !== 'offline')
+                    ->numeric()
+                    ->alignCenter()
+                    ->sortable()
+                    ->toggleable(),
+
                 Tables\Columns\TextColumn::make('max_students')
+                    ->hidden(fn ($livewire) => $livewire->activeTab === 'recorded')
                     ->numeric()
                     ->alignCenter()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
+
                 Tables\Columns\TextColumn::make('started_at')
+                    ->hidden(fn ($livewire) => $livewire->activeTab === 'recorded')
                     ->alignCenter()
-                    ->date(),
+                    ->date()
+                    ->toggleable(),
+
                 Tables\Columns\TextColumn::make('days')
                     ->label('Schedule')
                     ->formatStateUsing(function ($record) {
@@ -275,15 +315,15 @@ class CourseResource extends Resource
                             $hours = $start->diffInHours($end);
                             return "{$day->day}: {$hours} hours";
                         })->join(', ');
-                    }),
+                    })
+                    ->hidden(fn ($livewire) => $livewire->activeTab === 'recorded')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('price')
                     ->money('egp')
                     ->badge()
                     ->alignCenter()
-                    ->sortable(),
-//                Tables\Columns\TextColumn::make('discount_type')
-//                    ->formatStateUsing(fn (string $state): string => $state === 'amount' ? 'EGP' : '%')
-//                    ->alignCenter(),
+                    ->sortable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('discount_amount')
                     ->label('Discount')
                     ->state(fn ($record): string => $record->discount_type === 'amount'
@@ -293,7 +333,8 @@ class CourseResource extends Resource
                     ->color('danger')
                     ->alignCenter()
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('final_price')
                     ->money('egp')
                     ->state(fn ($record): string => $record->discount_type === 'amount'
@@ -302,9 +343,11 @@ class CourseResource extends Resource
                     ->badge()
                     ->color('success')
                     ->alignCenter()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
                 Tables\Columns\ToggleColumn::make('active')
-                    ->alignCenter(),
+                    ->alignCenter()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->sortable()
                     ->alignCenter()
@@ -322,30 +365,40 @@ class CourseResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ])
+            ])->recordAction(null)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
-
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        $record = request()->route('record');
+
+        if (!$record) {
+            return [];
+        }
+        $course = static::getModel()::find($record);
+        return match ($course->type) {
+            'online' => [MeetingRelationManager::class],
+            'offline' => [AttachmentRelationManager::class],
+            'recorded' => [LessonRelationManager::class],
+            default => [],
+        };
     }
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListCourses::route('/'),
             'create' => Pages\CreateCourse::route('/create'),
             'edit' => Pages\EditCourse::route('/{record}/edit'),
+            'view' => Pages\ViewCourse::route('/{record}'),
         ];
     }
 }

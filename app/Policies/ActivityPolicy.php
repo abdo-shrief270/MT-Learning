@@ -95,7 +95,7 @@ class ActivityPolicy
      */
     public function replicate(User $user, Activity $activity): bool
     {
-        return $user->can('replicate_activitylog');
+        return $user->can('{{ Replicate }}');
     }
 
     /**
@@ -103,6 +103,6 @@ class ActivityPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_activitylog');
+        return $user->can('{{ Reorder }}');
     }
 }
