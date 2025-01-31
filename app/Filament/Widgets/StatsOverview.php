@@ -4,7 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Models\Branch;
 use App\Models\Course;
-use App\Models\CourseLesson;
+use App\Models\Lesson;
 use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -31,7 +31,7 @@ class StatsOverview extends BaseWidget
                 ->icon('heroicon-o-users'),
             Stat::make('Courses', Course::count())
                 ->icon('heroicon-o-squares-2x2'),
-            Stat::make('Course Lessons', CourseLesson::count())
+            Stat::make('Course Lessons', Lesson::count())
                 ->icon('heroicon-o-video-camera'),
             Stat::make('Students', User::role('student')->count())
                 ->icon('heroicon-o-users'),
