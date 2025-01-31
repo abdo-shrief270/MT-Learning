@@ -61,8 +61,8 @@ class AdminPanelProvider extends PanelProvider
                 VerifyActivationUser::class,
             ])
             ->plugins([
-                //FilamentMailsPlugin::make(),
-                //FilamentShieldPlugin::make(),
+                FilamentMailsPlugin::make(),
+                FilamentShieldPlugin::make(),
                 FilamentEditEnvPlugin::make()
                     ->showButton(fn () => auth()->user()->id === 1)
                     ->setIcon('heroicon-o-cog'),
